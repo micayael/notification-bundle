@@ -1,0 +1,23 @@
+{
+  "name": "micayael/notification-bundle",
+  "description": "Bundle for user notifications",
+  "type": "symfony-bundle",
+  "license": "proprietary",
+  "require": {
+    "micayael/php-extras": "^1.0",
+    "symfony/framework-bundle": "^4.1",
+    "symfony/http-kernel": "^4.1"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.11"
+  },
+  "config": {
+    "secure-http": false,
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "Micayael\\NotificationBundle\\": ""
+    }
+  }
+}
