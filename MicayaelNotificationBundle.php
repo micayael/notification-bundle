@@ -1,6 +1,6 @@
 <?php
 
-namespace Dncp\Bundle\PliegosCore;
+namespace Micayael\NotificationBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
