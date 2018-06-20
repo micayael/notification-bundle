@@ -3,6 +3,13 @@
   "description": "Bundle for user notifications",
   "type": "symfony-bundle",
   "license": "MIT",
+  "authors": [
+    {
+      "name": "Juan Ardissone",
+      "email": "micayael@gmail.com",
+      "homepage": "http://micayael.com"
+    }
+  ],
   "require": {
     "micayael/php-extras": "^1.0",
     "symfony/framework-bundle": "^4.1",
