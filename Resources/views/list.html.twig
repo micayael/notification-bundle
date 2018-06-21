@@ -1,0 +1,144 @@
+{% set unreadCount = notification_count_unread(receptor_tipo, receptor_id) %}
+
+<div class="notifications-panel">
+
+    <div class="notifications-title">
+        {{ 'title.notificaciones'|trans }}
+
+        {% if unreadCount > 0 %}
+            <a href="#" data-uri="{{ path('notification.mark_all_as_read', { 'receptorTipo': receptor_tipo, 'receptorId': receptor_id }) }}" class="notificacions-mark-all-as-read">{{ 'notification.mark_all_as_read'|trans }} (<span class="notification-unread-count">{{ unreadCount }}</span>)</a>
+        {% endif %}
+    </div>
+
+    {% for notification in notifications %}
+        <div class="notification {% if notification.leido %}notification-read{% else %}notification-unread{% endif %}">
+            <div class="notification-title">
+
+                {% if notification.link %}
+                    <a href="{{ notification.link }}">{{ notification.titulo }}</a>
+                {% else %}
+                    {{ notification.titulo }}
+                {% endif %}
+
+                <a href="#" data-uri="{{ path('notification.mark_as_read', {'id': notification.id}) }}" class="mark-as">
+                    {% if notification.leido %}
+                        {{ 'notification.mark_as_unread'|trans }}
+                    {% else %}
+                        {{ 'notification.mark_as_read'|trans }}
+                    {% endif %}
+                </a>
+
+            </div>
+
+            <div class="notification-detail">
+
+                <ul>
+                {% for label, value in notification.detalle %}
+                    <li>
+                        <span class="notification-detail-label">{{ label }}:</span>
+                        <span class="notification-detail-value">{{ value }}</span>
+                    </li>
+                {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+    {% else %}
+        <div class="row notifications-panel-empty">
+            {{ 'Sin notificaciones'|trans }}
+        </div>
+    {% endfor %}
+
+</div>
+
+<script>
+
+    var markAsReadMessage = '{{ 'notification.mark_as_read'|trans }}';
+    var markAsUnreadMessage = '{{ 'notification.mark_as_unread'|trans }}';
+
+    function hideShowUnreadAll(){
+        var unreadCount = $('.notification-unread').length;
+        var markAllLink = $('.notificacions-mark-all-as-read');
+
+        if(unreadCount > 0){
+            $('.notification-unread-count').text(unreadCount);
+            markAllLink.show();
+        }else{
+            markAllLink.hide();
+        }
+    }
+
+    $('.notification-read a.mark-as, .notification-unread a.mark-as').on('click', function(e){
+
+        var $a = $(this);
+        var $notificationRow = $a.closest('.notification');
+
+        var uri = '';
+
+        var isRead = $notificationRow.hasClass('notification-read');
+
+        if(isRead){
+            uri = $a.data('uri')+'?read='+false;
+        }else{
+            uri = $a.data('uri')+'?read='+true;
+        }
+
+        $.post(uri)
+            .done(function( data ) {
+
+                if(data.result === 0){
+                    if(isRead){
+                        $a.text(markAsReadMessage);
+                        $notificationRow.removeClass('notification-read').addClass('notification-unread');
+                    }else {
+                        $a.text(markAsUnreadMessage);
+                        $notificationRow.removeClass('notification-unread').addClass('notification-read');
+                    }
+                }
+
+                hideShowUnreadAll();
+
+            });
+
+        return false;
+    });
+
+    $('.notificacions-mark-all-as-read').on('click', function(e){
+
+        var $markAllLink = $(this);
+        var uri = $markAllLink.data('uri');
+
+        $.post(uri)
+            .done(function( data ) {
+
+                if(data.result === 0){
+
+                    $('.notification').each(function(){
+
+                        var $markAsLink = $(this).find('a.mark-as');
+
+                        $markAsLink.text(markAsUnreadMessage);
+                        $(this).removeClass('notification-unread').addClass('notification-read');
+
+                    });
+
+                }
+
+                hideShowUnreadAll();
+
+            });
+
+        return false;
+    });
+
+</script>
+
+<style>
+    .notification-read{
+        font-weight: normal;
+    }
+
+    .notification-unread{
+        font-weight: bold;
+    }
+</style>

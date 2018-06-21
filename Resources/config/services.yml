@@ -1,0 +1,16 @@
+services:
+
+    notification.twig.notification_extension:
+        class: "Micayael\\NotificationBundle\\Twig\\NotificationExtension"
+        public: true
+        arguments: ["@twig", "@notification.manager"]
+        tags:
+            - { name: 'twig.extension' }
+
+    notification.manager:
+        class: "Micayael\\NotificationBundle\\Manager\\NotificationManager"
+        public: true
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    Micayael\NotificationBundle\Controller\DefaultController:
+        arguments: ["@notification.manager"]
